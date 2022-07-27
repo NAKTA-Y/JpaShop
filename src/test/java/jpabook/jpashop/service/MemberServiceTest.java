@@ -54,4 +54,25 @@ class MemberServiceTest {
             memberService.join(memberB);
         });
     }
+
+    @Test
+    void memberViewTest() {
+        //given
+        Member memberA = new Member();
+        Member memberB = new Member();
+        Member memberC = new Member();
+
+        memberA.setName("memberA");
+        memberB.setName("memberB");
+        memberC.setName("memberC");
+
+        //when
+        memberService.join(memberA);
+        memberService.join(memberB);
+        memberService.join(memberC);
+        int memberCount = memberService.memberView().size();
+
+        //then
+        assertThat(memberCount).isEqualTo(3);
+    }
 }
