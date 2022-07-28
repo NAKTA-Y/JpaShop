@@ -46,7 +46,7 @@ public class ItemController {
 
     @GetMapping("/items/list")
     public String list(Model model) {
-        List<Item> items = itemService.viewAllItem();
+        List<Item> items = itemService.findAllItems();
         model.addAttribute("items", items);
         return "items/itemList";
     }

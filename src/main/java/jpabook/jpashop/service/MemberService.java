@@ -32,7 +32,7 @@ public class MemberService {
         }
     }
 
-    public List<Member> memberView() {
+    public List<Member> findAllMembers() {
         return memberRepository.findAll();
     }
 }
