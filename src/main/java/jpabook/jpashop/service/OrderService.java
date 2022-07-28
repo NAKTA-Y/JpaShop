@@ -21,7 +21,9 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
 
-    //order
+    /**
+     * 주문
+     */
     @Transactional
     public Long order(Long memberId, Long itemId, int count) {
 
@@ -40,4 +42,17 @@ public class OrderService {
         return order.getId();
     }
 
+    /**
+     * 주문 취소
+     */
+    public void orderCancel(Long orderId) {
+        orderRepository.findById(orderId).cancel();
+    }
+
+    /**
+     * 주문 가격 조회
+     */
+    public int totalPriceView(Long orderId) {
+        return orderRepository.findById(orderId).getTotalPrice();
+    }
 }

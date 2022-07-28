@@ -7,7 +7,6 @@ import jpabook.jpashop.domain.order.Order;
 import jpabook.jpashop.domain.order.OrderStatus;
 import jpabook.jpashop.exception.NotEnoughStockException;
 import jpabook.jpashop.repository.OrderRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +60,45 @@ class OrderServiceTest {
         assertThrows(NotEnoughStockException.class, () -> {
             orderService.order(member.getId(), book.getId(), orderCount);
         });
+    }
+
+    @Test
+    public void orderCancel() {
+        //given
+        Member member = createMember("memberB");
+        Book book = createBook("JPA2", 10000, 20);
+
+        int orderCount = 2;
+        Long orderId = orderService.order(member.getId(), book.getId(), orderCount);
+
+        //when
+        orderService.orderCancel(orderId);
+
+        //then
+        Order getOrder = orderRepository.findById(orderId);
+
+        assertThat(getOrder.getStatus()).isEqualTo(OrderStatus.CANCEL);
+        assertThat(book.getStockQuantity()).isEqualTo(20);
+    }
+
+    @Test
+    public void totalPriceTest() {
+        //given
+        Member member = createMember("memberC");
+        Book item1 = createBook("JPA3", 15000, 20);
+        Book item2 = createBook("JPA4", 10000, 20);
+
+        //when
+        int orderCount = 5;
+        Long orderId1 = orderService.order(member.getId(), item1.getId(), orderCount);
+        Long orderId2 = orderService.order(member.getId(), item2.getId(), orderCount);
+
+        //then
+        int totalPrice1 = orderService.totalPriceView(orderId1);
+        assertThat(totalPrice1).isEqualTo(75000);
+
+        int totalPrice2 = orderService.totalPriceView(orderId2);
+        assertThat(totalPrice2).isEqualTo(50000);
     }
 
     private Member createMember(String name) {
